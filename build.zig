@@ -110,25 +110,44 @@ pub const PortSelect = struct {
 // Don't know if this is required but it doesn't hurt either.
 // Helps in case there are multiple microzig instances including the same ports (eg: examples).
 pub const PortCache = blk: {
-    var fields: []const std.builtin.Type.StructField = &.{};
-    for (port_list) |port| {
+    // var fields: []const std.builtin.Type.StructField = &.{};
+    // for (port_list) |port| {
+    //     const typ = ?(custom_lazy_import(port.dep_name) orelse struct {});
+    //     fields = fields ++ [_]std.builtin.Type.StructField{.{
+    //         .name = port.name,
+    //         .type = typ,
+    //         .default_value_ptr = @as(*const anyopaque, @ptrCast(&@as(typ, null))),
+    //         .is_comptime = false,
+    //         .alignment = @alignOf(typ),
+    //     }};
+    // }
+    // break :blk @Type(.{
+    //     .@"struct" = .{
+    //         .layout = .auto,
+    //         .fields = fields,
+    //         .decls = &.{},
+    //         .is_tuple = false,
+    //     },
+    // });
+    var field_names: [port_list.len][]const u8 = undefined;
+    var field_types: [port_list.len]type = undefined;
+    var field_attrs: [port_list.len]std.builtin.Type.StructField.Attributes = undefined;
+    for (port_list, &field_names, &field_types, &field_attrs) |
+        port,
+        *field_name,
+        *field_type,
+        *field_attr,
+    | {
         const typ = ?(custom_lazy_import(port.dep_name) orelse struct {});
-        fields = fields ++ [_]std.builtin.Type.StructField{.{
-            .name = port.name,
-            .type = typ,
+        field_name.* = port.name;
+        field_type.* = typ;
+        field_attr.* = .{
+            .@"comptime" = false,
+            .@"align" = @alignOf(typ),
             .default_value_ptr = @as(*const anyopaque, @ptrCast(&@as(typ, null))),
-            .is_comptime = false,
-            .alignment = @alignOf(typ),
-        }};
+        };
     }
-    break :blk @Type(.{
-        .@"struct" = .{
-            .layout = .auto,
-            .fields = fields,
-            .decls = &.{},
-            .is_tuple = false,
-        },
-    });
+    break :blk @Struct(.auto, null, &field_names, &field_types, &field_attrs);
 };
 
 var port_cache: PortCache = .{};
