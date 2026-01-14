@@ -189,6 +189,6 @@ fn main_impl() anyerror!void {
     var output_dir = try std.Io.Dir.cwd().createDirPathOpen(io, output_path, .{});
     defer output_dir.close(io);
 
-    var fs = FS_Directory.init(output_dir);
+    var fs = FS_Directory.init(io, output_dir);
     try db.to_zig(fs.directory(), .{});
 }
