@@ -23,7 +23,7 @@ const port_list: []const struct {
     dep_name: [:0]const u8,
 } = &.{
     // .{ .name = "esp", .dep_name = "port/espressif/esp" },
-    .{ .name = "gd32", .dep_name = "port/gigadevice/gd32" },
+    // .{ .name = "gd32", .dep_name = "port/gigadevice/gd32" },
     // .{ .name = "samd51", .dep_name = "port/microchip/samd51" },
     // .{ .name = "atmega", .dep_name = "port/microchip/atmega" },
     // .{ .name = "nrf5x", .dep_name = "port/nordic/nrf5x" },
@@ -77,7 +77,7 @@ pub fn build(b: *Build) void {
 
 pub const PortSelect = struct {
     // esp: bool = false,
-    gd32: bool = false,
+    // gd32: bool = false,
     // samd51: bool = false,
     // atmega: bool = false,
     // nrf5x: bool = false,
@@ -668,13 +668,14 @@ pub fn MicroBuild(port_select: PortSelect) type {
 
                         .dfu => @panic("DFU is not implemented yet. See https://github.com/ZigEmbeddedGroup/microzig/issues/145 for more details!"),
 
-                        .esp => |options| @import("tools/esp-image").from_elf(
-                            fw.mb.dep.builder.dependency("tools/esp-image", .{
-                                .optimize = .ReleaseSafe,
-                            }),
-                            elf_file,
-                            options,
-                        ),
+                        .esp => @panic("Commented"),
+                        // .esp => |options| @import("tools/esp-image").from_elf(
+                        //     fw.mb.dep.builder.dependency("tools/esp-image", .{
+                        //         .optimize = .ReleaseSafe,
+                        //     }),
+                        //     elf_file,
+                        //     options,
+                        // ),
 
                         .custom => |generator| generator.convert(fw.target.dep, elf_file),
                     };
@@ -827,6 +828,9 @@ inline fn custom_find_import_pkg_hash_or_fatal(comptime dep_name: []const u8) []
     const pkg_deps = comptime for (@typeInfo(deps.packages).@"struct".decls) |decl| {
         const pkg_hash = decl.name;
         const pkg = @field(deps.packages, pkg_hash);
+        if (!@hasDecl(pkg, "build_zig")) {
+            // @compileLog("dependency '{s}' is missing a 'build.zig' file", .{dep_name});
+        }
         if (@hasDecl(pkg, "build_zig") and pkg.build_zig == @This()) break pkg.deps;
     } else deps.root_deps;
 

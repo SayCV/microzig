@@ -10,8 +10,8 @@
         .drivers = .{ .path = "drivers" },
 
         // tools
-        // .@"tools/regz" = .{ .path = "tools/regz" },
-        // .@"tools/uf2" = .{ .path = "tools/uf2" },
+        .@"tools/regz" = .{ .path = "tools/regz" },
+        .@"tools/uf2" = .{ .path = "tools/uf2" },
         // .@"tools/esp-image" = .{ .path = "tools/esp-image" },
 
         // modules
