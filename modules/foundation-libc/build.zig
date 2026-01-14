@@ -23,7 +23,7 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    libc.addIncludePath(b.path("include"));
+    libc.root_module.addIncludePath(b.path("include"));
     for (header_files) |header_name|
         libc.installHeader(
             b.path(b.fmt("include/{s}", .{header_name})),
