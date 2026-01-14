@@ -21,11 +21,12 @@ pub fn main() !void {
     var arena: std.heap.ArenaAllocator = .init(debug_allocator.allocator());
     defer arena.deinit();
 
-    var threaded: std.Io.Threaded = .init(debug_allocator.allocator(), .{});
+    const allocator = arena.allocator();
+
+    var threaded: std.Io.Threaded = .init(allocator, .{});
     defer threaded.deinit();
     const io = threaded.io();
 
-    const allocator = arena.allocator();
     const args = try std.process.argsAlloc(allocator);
     if (args.len < 3 or args.len > 4) {
         return error.UsageError;
@@ -37,7 +38,7 @@ pub fn main() !void {
     const parsed_args = try std.json.parseFromSliceLeaky(Args, allocator, json_args, .{});
 
     const maybe_user_linker_script = if (args.len == 4)
-        try std.Io.Dir.cwd().readFileAlloc(io, allocator, args[3], .limited(100 * 1024 * 1024))
+        try std.Io.Dir.cwd().readFileAlloc(io, args[3], allocator, .limited(100 * 1024 * 1024))
     else
         null;
 
