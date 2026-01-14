@@ -834,5 +834,5 @@ inline fn custom_find_import_pkg_hash_or_fatal(comptime dep_name: []const u8) []
         if (std.mem.eql(u8, dep[0], dep_name)) return dep[1];
     };
 
-    @panic("dependency not found");
+    @panic("dependency not found - " ++ dep_name);
 }
