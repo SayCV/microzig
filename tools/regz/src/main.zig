@@ -150,7 +150,7 @@ fn main_impl() anyerror!void {
         return error.Explained;
     };
 
-    var db = try Database.create_from_path(allocator, format, input_path, args.device);
+    var db = try Database.create_from_path(io, allocator, format, input_path, args.device);
     defer db.destroy();
 
     for (args.patch_paths.items) |patch_path| {

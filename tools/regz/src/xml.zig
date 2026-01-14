@@ -1,5 +1,6 @@
 const std = @import("std");
 pub const c = @cImport({
+    @cDefine("_FORTIFY_SOURCE", "0");
     @cDefine("LIBXML_TREE_ENABLED", {});
     @cDefine("LIBXML_SCHEMAS_ENABLED", {});
     @cDefine("LIBXML_READER_ENABLED", {});
