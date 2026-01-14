@@ -13,9 +13,12 @@ pub const std_options = std.Options{
 };
 
 pub fn main() !void {
-    main_impl() catch |err| switch (err) {
-        error.Explained => std.process.exit(1),
-        else => return err,
+    main_impl() catch |err| {
+        std.log.err("Exit with Error: {s}", .{@errorName(err)});
+        switch (err) {
+            error.Explained => std.process.exit(1),
+            else => return err,
+        }
     };
 }
 
