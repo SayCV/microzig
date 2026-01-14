@@ -14,17 +14,14 @@ pub const Args = struct {
 
 var writer_buf: [1024]u8 = undefined;
 
-pub fn main(init: std.process.Init.Minimal) !void {
+pub fn main() !void {
     var debug_allocator: std.heap.DebugAllocator(.{}) = .init;
     defer _ = debug_allocator.deinit();
 
     var arena: std.heap.ArenaAllocator = .init(debug_allocator.allocator());
     defer arena.deinit();
 
-    var threaded: std.Io.Threaded = .init(debug_allocator.allocator(), .{
-        .argv0 = .init(init.args),
-        .environ = init.environ,
-    });
+    var threaded: std.Io.Threaded = .init(debug_allocator.allocator(), .{});
     defer threaded.deinit();
     const io = threaded.io();
 
