@@ -424,6 +424,7 @@ pub fn MicroBuild(port_select: PortSelect) type {
                     }
 
                     regz_run.addDirectoryArg(path);
+                    std.debug.print("target.chip.name: {s}\n", .{target.chip.name});
                     break :blk chips_dir.path(b, b.fmt("{s}.zig", .{target.chip.name}));
                 },
                 .targetdb => |targetdb| blk: {

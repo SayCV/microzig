@@ -325,7 +325,7 @@ pub fn load_into_db(io: std.Io, db: *Database, path: []const u8) !void {
                     const fieldset_value = (register_file.value.object.get(fieldset_key) orelse break :blk).object;
                     const fields = fieldset_value.get("fields");
                     if (fields == null) {
-                        std.log.err("No fields found for {s}", .{fieldset.string});
+                        std.log.err("fieldset_key({s})/fields not found for register {s}", .{ fieldset.string, register_name });
                         return;
                     }
                     next_field: for (fieldset_value.get("fields").?.array.items) |field| {
@@ -538,7 +538,7 @@ fn resolve_inheritance_recursively(allocator: std.mem.Allocator, json_data: *std
         const parent = try get_parent(allocator, json_data, child_full_name, parent_unqualified_name.string);
         const object_list_name = parent.value_ptr.object.get(list_name);
         if (object_list_name == null) {
-            std.log.err("No list_name({s}) found for parent_unqualified_name({s})", .{ list_name, parent_unqualified_name.string });
+            std.log.err("parent({s}) section({s}) not found for {s} ", .{ parent_unqualified_name.string, list_name, child_full_name });
             return;
         }
         const parent_section_array = parent.value_ptr.object.get(list_name).?.array;
