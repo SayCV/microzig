@@ -18,6 +18,7 @@ pub fn create_file(ctx: *anyopaque, filename: []const u8, contents: []const u8) 
     var writer_buf: [4096]u8 = undefined;
     var writer = file.writer(fs.io, &writer_buf);
     writer.interface.writeAll(contents) catch return error.System;
+    writer.interface.flush() catch return error.System;
 }
 
 pub fn init(io: std.Io, dir: std.Io.Dir) FS_Directory {
