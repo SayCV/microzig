@@ -172,20 +172,17 @@ pub fn MicroBuild(port_select: PortSelect) type {
         const Self = @This();
 
         const SelectedPorts = blk: {
-            var field_names: [port_list.len][]const u8 = undefined;
-            var field_types: [port_list.len]type = undefined;
-            var field_attrs: [port_list.len]std.builtin.Type.StructField.Attributes = undefined;
-            for (port_list, &field_names, &field_types, &field_attrs) |
+            var field_names: [1][]const u8 = undefined;
+            var field_types: [1]type = undefined;
+            var field_attrs: [1]std.builtin.Type.StructField.Attributes = undefined;
+            for (port_list) |
                 port,
-                *field_name,
-                *field_type,
-                *field_attr,
             | {
                 if (@field(port_select, port.name)) {
                     const typ = ?(custom_lazy_import(port.dep_name) orelse struct {});
-                    field_name.* = port.name;
-                    field_type.* = typ;
-                    field_attr.* = .{
+                    field_names[0] = port.name;
+                    field_types[0] = typ;
+                    field_attrs[0] = .{
                         .@"comptime" = false,
                         .@"align" = @alignOf(typ),
                         .default_value_ptr = null,
