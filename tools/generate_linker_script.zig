@@ -14,12 +14,19 @@ pub const Args = struct {
 
 var writer_buf: [1024]u8 = undefined;
 
-pub fn main() !void {
+pub fn main(init: std.process.Init.Minimal) !void {
     var debug_allocator: std.heap.DebugAllocator(.{}) = .init;
     defer _ = debug_allocator.deinit();
 
     var arena: std.heap.ArenaAllocator = .init(debug_allocator.allocator());
     defer arena.deinit();
+
+    var threaded: std.Io.Threaded = .init(debug_allocator.allocator(), .{
+        .argv0 = .init(init.args),
+        .environ = init.environ,
+    });
+    defer threaded.deinit();
+    const io = threaded.io();
 
     const allocator = arena.allocator();
     const args = try std.process.argsAlloc(allocator);
@@ -33,14 +40,14 @@ pub fn main() !void {
     const parsed_args = try std.json.parseFromSliceLeaky(Args, allocator, json_args, .{});
 
     const maybe_user_linker_script = if (args.len == 4)
-        try std.fs.cwd().readFileAlloc(allocator, args[3], 100 * 1024 * 1024)
+        try std.Io.Dir.cwd().readFileAlloc(io, allocator, args[3], .limited(100 * 1024 * 1024))
     else
         null;
 
-    const file = try std.fs.cwd().createFile(output_path, .{});
-    defer file.close();
+    const file = try std.Io.Dir.cwd().createFile(io, output_path, .{});
+    defer file.close(io);
 
-    var writer = file.writer(&writer_buf);
+    var writer = file.writer(io, &writer_buf);
     try writer.interface.print(
         \\/*
         \\ * Target CPU:  {[cpu]s}
