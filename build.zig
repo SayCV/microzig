@@ -22,16 +22,16 @@ const port_list: []const struct {
     name: [:0]const u8,
     dep_name: [:0]const u8,
 } = &.{
-    .{ .name = "esp", .dep_name = "port/espressif/esp" },
-    .{ .name = "gd32", .dep_name = "port/gigadevice/gd32" },
-    .{ .name = "samd51", .dep_name = "port/microchip/samd51" },
-    .{ .name = "atmega", .dep_name = "port/microchip/atmega" },
-    .{ .name = "nrf5x", .dep_name = "port/nordic/nrf5x" },
-    .{ .name = "lpc", .dep_name = "port/nxp/lpc" },
-    .{ .name = "mcx", .dep_name = "port/nxp/mcx" },
-    .{ .name = "rp2xxx", .dep_name = "port/raspberrypi/rp2xxx" },
+    // .{ .name = "esp", .dep_name = "port/espressif/esp" },
+    // .{ .name = "gd32", .dep_name = "port/gigadevice/gd32" },
+    // .{ .name = "samd51", .dep_name = "port/microchip/samd51" },
+    // .{ .name = "atmega", .dep_name = "port/microchip/atmega" },
+    // .{ .name = "nrf5x", .dep_name = "port/nordic/nrf5x" },
+    // .{ .name = "lpc", .dep_name = "port/nxp/lpc" },
+    // .{ .name = "mcx", .dep_name = "port/nxp/mcx" },
+    // .{ .name = "rp2xxx", .dep_name = "port/raspberrypi/rp2xxx" },
     .{ .name = "stm32", .dep_name = "port/stmicro/stm32" },
-    .{ .name = "ch32v", .dep_name = "port/wch/ch32v" },
+    // .{ .name = "ch32v", .dep_name = "port/wch/ch32v" },
 };
 
 const exe_targets: []const std.Target.Query = &.{
@@ -75,16 +75,16 @@ pub fn build(b: *Build) void {
 }
 
 pub const PortSelect = struct {
-    esp: bool = false,
-    gd32: bool = false,
-    samd51: bool = false,
-    atmega: bool = false,
-    nrf5x: bool = false,
-    lpc: bool = false,
-    mcx: bool = false,
-    rp2xxx: bool = false,
+    // esp: bool = false,
+    // gd32: bool = false,
+    // samd51: bool = false,
+    // atmega: bool = false,
+    // nrf5x: bool = false,
+    // lpc: bool = false,
+    // mcx: bool = false,
+    // rp2xxx: bool = false,
     stm32: bool = false,
-    ch32v: bool = false,
+    // ch32v: bool = false,
 
     pub const all: PortSelect = blk: {
         var ret: PortSelect = undefined;
@@ -643,23 +643,25 @@ pub fn MicroBuild(port_select: PortSelect) type {
                             break :blk objcopy.getOutput();
                         },
 
-                        .uf2 => |options| @import("tools/uf2").from_elf(
-                            fw.mb.dep.builder.dependency("tools/uf2", .{
-                                .optimize = .ReleaseSafe,
-                            }),
-                            elf_file,
-                            options,
-                        ),
+                        .uf2 => @panic("commented for reduce depends"),
+                        // .uf2 => |options| @import("tools/uf2").from_elf(
+                        //     fw.mb.dep.builder.dependency("tools/uf2", .{
+                        //         .optimize = .ReleaseSafe,
+                        //     }),
+                        //     elf_file,
+                        //     options,
+                        // ),
 
                         .dfu => @panic("DFU is not implemented yet. See https://github.com/ZigEmbeddedGroup/microzig/issues/145 for more details!"),
 
-                        .esp => |options| @import("tools/esp-image").from_elf(
-                            fw.mb.dep.builder.dependency("tools/esp-image", .{
-                                .optimize = .ReleaseSafe,
-                            }),
-                            elf_file,
-                            options,
-                        ),
+                        .esp => @panic("commented for reduce depends"),
+                        // .esp => |options| @import("tools/esp-image").from_elf(
+                        //     fw.mb.dep.builder.dependency("tools/esp-image", .{
+                        //         .optimize = .ReleaseSafe,
+                        //     }),
+                        //     elf_file,
+                        //     options,
+                        // ),
 
                         .custom => |generator| generator.convert(fw.target.dep, elf_file),
                     };
