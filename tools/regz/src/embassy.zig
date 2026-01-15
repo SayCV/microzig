@@ -292,6 +292,11 @@ pub fn load_into_db(io: std.Io, db: *Database, path: []const u8) !void {
                     null,
             });
 
+            const items_array = obj.object.get("items");
+            if (items_array == null) {
+                std.log.err("key({s})/items not found for register_file({s})", .{ key, name });
+                return;
+            }
             for (obj.object.get("items").?.array.items) |item| {
                 const register_name = item.object.get("name").?.string;
                 const description: ?[]const u8 = if (item.object.get("description")) |desc| desc.string else null;
