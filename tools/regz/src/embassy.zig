@@ -292,11 +292,6 @@ pub fn load_into_db(io: std.Io, db: *Database, path: []const u8) !void {
                     null,
             });
 
-            const items_array = obj.object.get("items");
-            if (items_array == null) {
-                std.log.err("key({s})/items not found for register_file({s})", .{ key, name });
-                return;
-            }
             for (obj.object.get("items").?.array.items) |item| {
                 const register_name = item.object.get("name").?.string;
                 const description: ?[]const u8 = if (item.object.get("description")) |desc| desc.string else null;
@@ -328,11 +323,6 @@ pub fn load_into_db(io: std.Io, db: *Database, path: []const u8) !void {
                 if (item.object.get("fieldset")) |fieldset| blk: {
                     const fieldset_key = try std.fmt.allocPrint(allocator, "fieldset/{s}", .{fieldset.string});
                     const fieldset_value = (register_file.value.object.get(fieldset_key) orelse break :blk).object;
-                    const fields = fieldset_value.get("fields");
-                    if (fields == null) {
-                        std.log.err("fieldset_key({s})/fields not found for register {s}", .{ fieldset.string, register_name });
-                        return;
-                    }
                     next_field: for (fieldset_value.get("fields").?.array.items) |field| {
                         const field_name = field.object.get("name").?.string;
                         const field_description: ?[]const u8 = if (field.object.get("description")) |desc| desc.string else null;
@@ -526,6 +516,7 @@ fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Alloc
                 try new_list.append(value);
             }
             try child.object.put(list_name, std.json.Value{ .array = new_list });
+            try root_json.object.put(item_name, child);
         }
     }
 }
@@ -541,11 +532,6 @@ fn resolve_inheritance_recursively(allocator: std.mem.Allocator, json_data: *std
 
         //Get access to the parent and its list of items.
         const parent = try get_parent(allocator, json_data, child_full_name, parent_unqualified_name.string);
-        const object_list_name = parent.value_ptr.object.get(list_name);
-        if (object_list_name == null) {
-            std.log.err("parent({s}) section({s}) not found for {s} ", .{ parent_unqualified_name.string, list_name, child_full_name });
-            return;
-        }
         const parent_section_array = parent.value_ptr.object.get(list_name).?.array;
 
         // If our dictionary doesn't contain an item present in the child add it to the list
