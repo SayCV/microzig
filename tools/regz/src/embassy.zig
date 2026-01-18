@@ -233,7 +233,7 @@ pub fn load_into_db(io: std.Io, db: *Database, path: []const u8) !void {
         });
         errdefer register_file.deinit();
 
-        try handle_extends(allocator, extends_list_allocator, &register_file.value);
+        try handle_extends(allocator, extends_list_allocator, &register_file.value, &register_file.value);
 
         const register_name = try allocator.dupe(u8, entry.name[0 .. entry.name.len - std.fs.path.extension(entry.name).len]);
         try register_files.put(register_name, register_file);
@@ -485,12 +485,14 @@ pub fn load_into_db(io: std.Io, db: *Database, path: []const u8) !void {
 }
 
 /// Reads throught the json data handles the "extends" inheritance.
-fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Allocator, root_json: *std.json.Value) !void {
+fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Allocator, root_json: *std.json.Value, root_json_new: *std.json.Value) !void {
+    var root_json_clone = std.json.Value{ .object = try root_json.object.clone() };
     var itr = root_json.object.iterator();
     while (itr.next()) |entry| {
         const item_name = entry.key_ptr.*;
         const item_value = entry.value_ptr;
 
+        var extend_updated = false;
         if (item_value.*.object.contains("extends")) {
 
             // This Collects unique items from the ancestors.
@@ -508,7 +510,7 @@ fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Alloc
             }
 
             // Handle all parents and grandparents of the current child.
-            try resolve_inheritance_recursively(allocator, root_json, item_name, &arr);
+            try resolve_inheritance_recursively(allocator, &root_json_clone, item_name, &arr);
 
             // Replacement items will go here and should be released via the arena extends allocator
             var new_list = std.json.Array.init(extends_allocator);
@@ -516,9 +518,14 @@ fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Alloc
                 try new_list.append(value);
             }
             try child.object.put(list_name, std.json.Value{ .array = new_list });
-            try root_json.object.put(item_name, child);
+            try root_json_clone.object.put(item_name, child);
+            extend_updated = true;
+        }
+        if (!extend_updated) {
+            try root_json_clone.object.put(item_name, root_json.object.get(item_name).?);
         }
     }
+    root_json_new.* = root_json_clone;
 }
 
 // General function to handle inheritance
