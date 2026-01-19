@@ -115,100 +115,100 @@ fn nop() std.Io {
             .swapCancelProtection = swapCancelProtection,
             .checkCancel = checkCancel,
 
-            .futexWait = futexWait,
-            .futexWaitUncancelable = futexWaitUncancelable,
-            .futexWake = futexWake,
+            .futexWait = @panic("futexWait unavailable"),
+            .futexWaitUncancelable = @panic("futexWaitUncancelable unavailable"),
+            .futexWake = @panic("futexWake unavailable"),
 
-            .dirCreateDir = dirCreateDir,
-            .dirCreateDirPath = dirCreateDirPath,
-            .dirCreateDirPathOpen = dirCreateDirPathOpen,
-            .dirStat = dirStat,
-            .dirStatFile = dirStatFile,
-            .dirAccess = dirAccess,
-            .dirCreateFile = dirCreateFile,
-            .dirCreateFileAtomic = dirCreateFileAtomic,
-            .dirOpenFile = dirOpenFile,
-            .dirOpenDir = dirOpenDir,
-            .dirClose = dirClose,
-            .dirRead = dirRead,
-            .dirRealPath = dirRealPath,
-            .dirRealPathFile = dirRealPathFile,
-            .dirDeleteFile = dirDeleteFile,
-            .dirDeleteDir = dirDeleteDir,
-            .dirRename = dirRename,
-            .dirRenamePreserve = dirRenamePreserve,
-            .dirSymLink = dirSymLink,
-            .dirReadLink = dirReadLink,
-            .dirSetOwner = dirSetOwner,
-            .dirSetFileOwner = dirSetFileOwner,
-            .dirSetPermissions = dirSetPermissions,
-            .dirSetFilePermissions = dirSetFilePermissions,
-            .dirSetTimestamps = dirSetTimestamps,
-            .dirHardLink = dirHardLink,
+            .dirCreateDir = @panic("dirCreateDir unavailable"),
+            .dirCreateDirPath = @panic("dirCreateDirPath unavailable"),
+            .dirCreateDirPathOpen = @panic("dirCreateDirPathOpen unavailable"),
+            .dirStat = @panic("dirStat unavailable"),
+            .dirStatFile = @panic("dirStatFile unavailable"),
+            .dirAccess = @panic("dirAccess unavailable"),
+            .dirCreateFile = @panic("dirCreateFile unavailable"),
+            .dirCreateFileAtomic = @panic("dirCreateFileAtomic unavailable"),
+            .dirOpenFile = @panic("dirOpenFile unavailable"),
+            .dirOpenDir = @panic("dirOpenDir unavailable"),
+            .dirClose = @panic("dirClose unavailable"),
+            .dirRead = @panic("dirRead unavailable"),
+            .dirRealPath = @panic("dirRealPath unavailable"),
+            .dirRealPathFile = @panic("dirRealPathFile unavailable"),
+            .dirDeleteFile = @panic("dirDeleteFile unavailable"),
+            .dirDeleteDir = @panic("dirDeleteDir unavailable"),
+            .dirRename = @panic("dirRename unavailable"),
+            .dirRenamePreserve = @panic("dirRenamePreserve unavailable"),
+            .dirSymLink = @panic("dirSymLink unavailable"),
+            .dirReadLink = @panic("dirReadLink unavailable"),
+            .dirSetOwner = @panic("dirSetOwner unavailable"),
+            .dirSetFileOwner = @panic("dirSetFileOwner unavailable"),
+            .dirSetPermissions = @panic("dirSetPermissions unavailable"),
+            .dirSetFilePermissions = @panic("dirSetFilePermissions unavailable"),
+            .dirSetTimestamps = @panic("dirSetTimestamps unavailable"),
+            .dirHardLink = @panic("dirHardLink unavailable"),
 
-            .fileStat = fileStat,
-            .fileLength = fileLength,
-            .fileClose = fileClose,
-            .fileWriteStreaming = fileWriteStreaming,
-            .fileWritePositional = fileWritePositional,
-            .fileWriteFileStreaming = fileWriteFileStreaming,
-            .fileWriteFilePositional = fileWriteFilePositional,
-            .fileReadStreaming = fileReadStreaming,
-            .fileReadPositional = fileReadPositional,
-            .fileSeekBy = fileSeekBy,
-            .fileSeekTo = fileSeekTo,
-            .fileSync = fileSync,
-            .fileIsTty = fileIsTty,
-            .fileEnableAnsiEscapeCodes = fileEnableAnsiEscapeCodes,
-            .fileSupportsAnsiEscapeCodes = fileSupportsAnsiEscapeCodes,
-            .fileSetLength = fileSetLength,
-            .fileSetOwner = fileSetOwner,
-            .fileSetPermissions = fileSetPermissions,
-            .fileSetTimestamps = fileSetTimestamps,
-            .fileLock = fileLock,
-            .fileTryLock = fileTryLock,
-            .fileUnlock = fileUnlock,
-            .fileDowngradeLock = fileDowngradeLock,
-            .fileRealPath = fileRealPath,
-            .fileHardLink = fileHardLink,
+            .fileStat = @panic("fileStat unavailable"),
+            .fileLength = @panic("fileLength unavailable"),
+            .fileClose = @panic("fileClose unavailable"),
+            .fileWriteStreaming = @panic("fileWriteStreaming unavailable"),
+            .fileWritePositional = @panic("fileWritePositional unavailable"),
+            .fileWriteFileStreaming = @panic("fileWriteFileStreaming unavailable"),
+            .fileWriteFilePositional = @panic("fileWriteFilePositional unavailable"),
+            .fileReadStreaming = @panic("fileReadStreaming unavailable"),
+            .fileReadPositional = @panic("fileReadPositional unavailable"),
+            .fileSeekBy = @panic("fileSeekBy unavailable"),
+            .fileSeekTo = @panic("fileSeekTo unavailable"),
+            .fileSync = @panic("fileSync unavailable"),
+            .fileIsTty = @panic("fileIsTty unavailable"),
+            .fileEnableAnsiEscapeCodes = @panic("fileEnableAnsiEscapeCodes unavailable"),
+            .fileSupportsAnsiEscapeCodes = @panic("fileSupportsAnsiEscapeCodes unavailable"),
+            .fileSetLength = @panic("fileSetLength unavailable"),
+            .fileSetOwner = @panic("fileSetOwner unavailable"),
+            .fileSetPermissions = @panic("fileSetPermissions unavailable"),
+            .fileSetTimestamps = @panic("fileSetTimestamps unavailable"),
+            .fileLock = @panic("fileLock unavailable"),
+            .fileTryLock = @panic("fileTryLock unavailable"),
+            .fileUnlock = @panic("fileUnlock unavailable"),
+            .fileDowngradeLock = @panic("fileDowngradeLock unavailable"),
+            .fileRealPath = @panic("fileRealPath unavailable"),
+            .fileHardLink = @panic("fileHardLink unavailable"),
 
-            .processExecutableOpen = processExecutableOpen,
-            .processExecutablePath = processExecutablePath,
-            .lockStderr = lockStderr,
-            .tryLockStderr = tryLockStderr,
-            .unlockStderr = unlockStderr,
-            .processSetCurrentDir = processSetCurrentDir,
-            .processReplace = processReplace,
-            .processReplacePath = processReplacePath,
-            .processSpawn = processSpawn,
-            .processSpawnPath = processSpawnPath,
-            .childWait = childWait,
-            .childKill = childKill,
+            .processExecutableOpen = @panic("processExecutableOpen unavailable"),
+            .processExecutablePath = @panic("processExecutablePath unavailable"),
+            .lockStderr = @panic("lockStderr unavailable"),
+            .tryLockStderr = @panic("tryLockStderr unavailable"),
+            .unlockStderr = @panic("unlockStderr unavailable"),
+            .processSetCurrentDir = @panic("processSetCurrentDir unavailable"),
+            .processReplace = @panic("processReplace unavailable"),
+            .processReplacePath = @panic("processReplacePath unavailable"),
+            .processSpawn = @panic("processSpawn unavailable"),
+            .processSpawnPath = @panic("processSpawnPath unavailable"),
+            .childWait = @panic("childWait unavailable"),
+            .childKill = @panic("childKill unavailable"),
 
-            .progressParentFile = progressParentFile,
+            .progressParentFile = @panic("progressParentFile unavailable"),
 
-            .now = now,
-            .sleep = sleep,
+            .now = @panic("now unavailable"),
+            .sleep = @panic("sleep unavailable"),
 
-            .random = random,
-            .randomSecure = randomSecure,
+            .random = @panic("random unavailable"),
+            .randomSecure = @panic("randomSecure unavailable"),
 
-            .netListenIp = netListenIpUnavailable,
-            .netListenUnix = netListenUnixUnavailable,
-            .netAccept = netAcceptUnavailable,
-            .netBindIp = netBindIpUnavailable,
-            .netConnectIp = netConnectIpUnavailable,
-            .netConnectUnix = netConnectUnixUnavailable,
-            .netClose = netCloseUnavailable,
-            .netShutdown = netShutdownUnavailable,
-            .netRead = netReadUnavailable,
-            .netWrite = netWriteUnavailable,
-            .netWriteFile = netWriteFileUnavailable,
-            .netSend = netSendUnavailable,
-            .netReceive = netReceiveUnavailable,
-            .netInterfaceNameResolve = netInterfaceNameResolveUnavailable,
-            .netInterfaceName = netInterfaceNameUnavailable,
-            .netLookup = netLookupUnavailable,
+            .netListenIp = @panic("netListenIp unavailable"),
+            .netListenUnix = @panic("netListenUnix unavailable"),
+            .netAccept = @panic("netAccept unavailable"),
+            .netBindIp = @panic("netBindIp unavailable"),
+            .netConnectIp = @panic("netConnectIp unavailable"),
+            .netConnectUnix = @panic("netConnectUnix unavailable"),
+            .netClose = @panic("netClose unavailable"),
+            .netShutdown = @panic("netShutdown unavailable"),
+            .netRead = @panic("netRead unavailable"),
+            .netWrite = @panic("netWrite unavailable"),
+            .netWriteFile = @panic("netWriteFile unavailable"),
+            .netSend = @panic("netSend unavailable"),
+            .netReceive = @panic("netReceive unavailable"),
+            .netInterfaceNameResolve = @panic("netInterfaceNameResolve unavailable"),
+            .netInterfaceName = @panic("netInterfaceName unavailable"),
+            .netLookup = @panic("netLookup unavailable"),
         },
     };
 }
@@ -233,4 +233,83 @@ fn concurrent(
     _: *const fn (context: *const anyopaque, result: *anyopaque) void,
 ) std.Io.ConcurrentError!*std.Io.AnyFuture {
     return error.ConcurrencyUnavailable;
+}
+
+fn await(
+    _: ?*anyopaque,
+    _: *std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("await unavailable");
+}
+
+fn cancel(
+    _: ?*anyopaque,
+    _: *std.Io.AnyFuture,
+) void {
+    @panic("cancel unavailable");
+}
+
+fn select(
+    _: ?*anyopaque,
+    _: []*std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("select unavailable");
+}
+
+fn groupAsync(
+    _: ?*anyopaque,
+    _: []*std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("groupAsync unavailable");
+}
+fn groupConcurrent(
+    _: ?*anyopaque,
+    _: []*std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("groupConcurrent unavailable");
+}
+fn groupSelect(
+    _: ?*anyopaque,
+    _: []*std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("groupSelect unavailable");
+}
+fn groupCancel(
+    _: ?*anyopaque,
+    _: []*std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("groupCancel unavailable");
+}
+fn groupAwait(
+    _: ?*anyopaque,
+    _: []*std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("groupAwait unavailable");
+}
+fn recancel(
+    _: ?*anyopaque,
+    _: []*std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("recancel unavailable");
+}
+fn swapCancelProtection(
+    _: ?*anyopaque,
+    _: []*std.Io.AnyFuture,
+    _: *anyopaque,
+) void {
+    @panic("swapCancelProtection unavailable");
+}
+fn checkCancel(
+    _: ?*anyopaque,
+    _: *anyopaque,
+) void {
+    @panic("checkCancel unavailable");
 }
