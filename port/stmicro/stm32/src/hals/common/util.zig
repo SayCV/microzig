@@ -13,7 +13,7 @@ pub fn match_name(heystack: []const u8, needles: []const []const u8) bool {
 
 pub fn create_peripheral_enum(comptime bases_name: []const []const u8) type {
     var field_names: [70][]const u8 = undefined;
-    var field_values: [70]u16 = undefined;
+    var field_values: [70]usize = undefined;
     var names_index = 0;
     const peripheral = @typeInfo(peripherals);
     @setEvalBranchQuota(10_000);
@@ -39,7 +39,7 @@ pub fn sub_peripheral_enum(comptime T: type, comptime keep_name: []const []const
     var names_index = 0;
 
     var field_names: [10][]const u8 = undefined;
-    var field_values: [10]u16 = undefined;
+    var field_values: [10]usize = undefined;
 
     @setEvalBranchQuota(10_000);
     switch (enum_info) {
