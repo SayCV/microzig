@@ -149,40 +149,37 @@ pub fn GPIO(comptime mode: gpio.Mode) type {
 
 pub fn Pins(comptime config: GlobalConfiguration) type {
     comptime {
-        var fields: []const StructField = &.{};
+        const len = @typeInfo(GlobalConfiguration).@"struct".fields.len * @typeInfo(Port.Configuration).@"struct".fields.len;
+        var field_names: [len][]const u8 = undefined;
+        var field_types: [len]type = undefined;
+        var field_attrs: [len]std.builtin.Type.StructField.Attributes = undefined;
+        var count: usize = 0;
         for (@typeInfo(GlobalConfiguration).@"struct".fields) |port_field| {
             if (@field(config, port_field.name)) |port_config| {
                 for (@typeInfo(Port.Configuration).@"struct".fields) |field| {
                     if (@field(port_config, field.name)) |pin_config| {
-                        var pin_field = StructField{
-                            .is_comptime = false,
-                            .default_value_ptr = null,
+                        const i = count;
+                        const default_name = "P" ++ port_field.name[4..5] ++ field.name[3..];
 
-                            // initialized below:
-                            .name = undefined,
-                            .type = undefined,
-                            .alignment = undefined,
+                        field_names[i] = pin_config.name orelse default_name;
+                        field_types[i] = GPIO(pin_config.mode orelse .{ .input = .{.floating} });
+                        field_attrs[i] = .{
+                            .@"align" = @alignOf(field.type),
                         };
 
-                        const default_name = "P" ++ port_field.name[4..5] ++ field.name[3..];
-                        pin_field.name = pin_config.name orelse default_name;
-                        pin_field.type = GPIO(pin_config.mode orelse .{ .input = .{.floating} });
-                        pin_field.alignment = @alignOf(field.type);
-
-                        fields = fields ++ &[_]StructField{pin_field};
+                        count += 1;
                     }
                 }
             }
         }
 
-        return @Type(.{
-            .@"struct" = .{
-                .layout = .auto,
-                .is_tuple = false,
-                .fields = fields,
-                .decls = &.{},
-            },
-        });
+        return @Struct(
+            .auto,
+            null,
+            field_names[0..count],
+            field_types[0..count],
+            field_attrs[0..count],
+        );
     }
 }
 
