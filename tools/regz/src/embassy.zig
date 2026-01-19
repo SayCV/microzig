@@ -492,7 +492,6 @@ fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Alloc
         const item_name = entry.key_ptr.*;
         const item_value = entry.value_ptr;
 
-        var extend_updated = false;
         if (item_value.*.object.contains("extends")) {
 
             // This Collects unique items from the ancestors.
@@ -519,10 +518,6 @@ fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Alloc
             }
             try child.object.put(list_name, std.json.Value{ .array = new_list });
             try root_json_clone.object.put(item_name, child);
-            extend_updated = true;
-        }
-        if (!extend_updated) {
-            try root_json_clone.object.put(item_name, root_json.object.get(item_name).?);
         }
     }
     root_json_new.* = root_json_clone;
