@@ -233,7 +233,7 @@ pub fn load_into_db(io: std.Io, db: *Database, path: []const u8) !void {
         });
         errdefer register_file.deinit();
 
-        try handle_extends(allocator, extends_list_allocator, &register_file.value, &register_file.value);
+        try handle_extends(allocator, extends_list_allocator, &register_file.value);
 
         const register_name = try allocator.dupe(u8, entry.name[0 .. entry.name.len - std.fs.path.extension(entry.name).len]);
         try register_files.put(register_name, register_file);
@@ -485,7 +485,7 @@ pub fn load_into_db(io: std.Io, db: *Database, path: []const u8) !void {
 }
 
 /// Reads throught the json data handles the "extends" inheritance.
-fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Allocator, root_json: *std.json.Value, root_json_new: *std.json.Value) !void {
+fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Allocator, root_json: *std.json.Value) !void {
     var root_json_clone = std.json.Value{ .object = try root_json.object.clone() };
     var itr = root_json.object.iterator();
     while (itr.next()) |entry| {
@@ -520,7 +520,7 @@ fn handle_extends(allocator: std.mem.Allocator, extends_allocator: std.mem.Alloc
             try root_json_clone.object.put(item_name, child);
         }
     }
-    root_json_new.* = root_json_clone;
+    root_json.* = root_json_clone;
 }
 
 // General function to handle inheritance
