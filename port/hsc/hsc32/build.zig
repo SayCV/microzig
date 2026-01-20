@@ -13,7 +13,9 @@ boards: struct {
 
 pub fn init(dep: *std.Build.Dependency) Self {
     const b = dep.builder;
-    const embassy = b.path("../hsc32-data");
+    const hsc32_data_generated = std.fs.path.join(b.allocator, &.{ b.build_root.path.?, "../hsc32-data" }) catch unreachable;
+    defer b.allocator.free(hsc32_data_generated);
+    const embassy: std.Build.LazyPath = .{ .cwd_relative = "../hsc32-data" };
 
     const hal: microzig.HardwareAbstractionLayer = .{
         .root_source_file = b.path("src/hal.zig"),
@@ -39,9 +41,7 @@ pub fn init(dep: *std.Build.Dependency) Self {
                 .{ .tag = .flash, .offset = 0x00000000, .length = 128 * 1024, .access = .rx },
                 .{ .tag = .ram, .offset = 0x20000000, .length = 16 * 1024, .access = .rwx },
             },
-            .patch_files = &.{
-                b.path("patches/nrf51.zon"),
-            },
+            // .patch_files = &.{b.path("patches/hsc32.zon")},
         },
         .hal = hal,
     };
@@ -63,6 +63,9 @@ pub fn init(dep: *std.Build.Dependency) Self {
 }
 
 pub fn build(b: *std.Build) !void {
+    const hsc32_data_generated = std.fs.path.join(b.allocator, &.{ b.build_root.path.?, "../hsc32-data" }) catch unreachable;
+    defer b.allocator.free(hsc32_data_generated);
+    const embassy: std.Build.LazyPath = .{ .cwd_relative = "../hsc32-data" };
     const generate_optimize = .ReleaseSafe;
     const regz_dep = b.dependency("microzig/tools/regz", .{
         .optimize = generate_optimize,
@@ -81,7 +84,7 @@ pub fn build(b: *std.Build) !void {
 
     const generate_run = b.addRunArtifact(generate_exe);
     generate_run.max_stdio_size = std.math.maxInt(usize);
-    generate_run.addFileArg(b.path("../hsc32-data"));
+    generate_run.addFileArg(embassy);
 
     const generate_step = b.step("generate", "Generate chips file 'src/Chips.zig'");
     generate_step.dependOn(&generate_run.step);
