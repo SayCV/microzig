@@ -22,17 +22,17 @@ const port_list: []const struct {
     name: [:0]const u8,
     dep_name: [:0]const u8,
 } = &.{
-    .{ .name = "esp", .dep_name = "port/espressif/esp" },
-    .{ .name = "gd32", .dep_name = "port/gigadevice/gd32" },
-    .{ .name = "samd51", .dep_name = "port/microchip/samd51" },
-    .{ .name = "atmega", .dep_name = "port/microchip/atmega" },
-    .{ .name = "nrf5x", .dep_name = "port/nordic/nrf5x" },
-    .{ .name = "lpc", .dep_name = "port/nxp/lpc" },
-    .{ .name = "mcx", .dep_name = "port/nxp/mcx" },
-    .{ .name = "rp2xxx", .dep_name = "port/raspberrypi/rp2xxx" },
+    // .{ .name = "esp", .dep_name = "port/espressif/esp" },
+    // .{ .name = "gd32", .dep_name = "port/gigadevice/gd32" },
+    // .{ .name = "samd51", .dep_name = "port/microchip/samd51" },
+    // .{ .name = "atmega", .dep_name = "port/microchip/atmega" },
+    // .{ .name = "nrf5x", .dep_name = "port/nordic/nrf5x" },
+    // .{ .name = "lpc", .dep_name = "port/nxp/lpc" },
+    // .{ .name = "mcx", .dep_name = "port/nxp/mcx" },
+    // .{ .name = "rp2xxx", .dep_name = "port/raspberrypi/rp2xxx" },
     .{ .name = "stm32", .dep_name = "port/stmicro/stm32" },
-    .{ .name = "ch32v", .dep_name = "port/wch/ch32v" },
-    .{ .name = "msp430", .dep_name = "port/texasinstruments/msp430" },
+    // .{ .name = "ch32v", .dep_name = "port/wch/ch32v" },
+    // .{ .name = "msp430", .dep_name = "port/texasinstruments/msp430" },
 };
 
 const exe_targets: []const std.Target.Query = &.{
@@ -76,17 +76,17 @@ pub fn build(b: *Build) void {
 }
 
 pub const PortSelect = struct {
-    esp: bool = false,
-    gd32: bool = false,
-    samd51: bool = false,
-    atmega: bool = false,
-    nrf5x: bool = false,
-    lpc: bool = false,
-    mcx: bool = false,
-    rp2xxx: bool = false,
+    // esp: bool = false,
+    // gd32: bool = false,
+    // samd51: bool = false,
+    // atmega: bool = false,
+    // nrf5x: bool = false,
+    // lpc: bool = false,
+    // mcx: bool = false,
+    // rp2xxx: bool = false,
     stm32: bool = false,
-    ch32v: bool = false,
-    msp430: bool = false,
+    // ch32v: bool = false,
+    // msp430: bool = false,
 
     pub const all: PortSelect = blk: {
         var ret: PortSelect = undefined;
