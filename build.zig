@@ -663,23 +663,25 @@ pub fn MicroBuild(port_select: PortSelect) type {
                             break :blk objcopy.getOutput();
                         },
 
-                        .uf2 => |options| @import("tools/uf2").from_elf(
-                            fw.mb.dep.builder.dependency("tools/uf2", .{
-                                .optimize = .ReleaseSafe,
-                            }),
-                            elf_file,
-                            options,
-                        ),
+                        .uf2 => @panic("commentted since non-needed"),
+                        // .uf2 => |options| @import("tools/uf2").from_elf(
+                        //     fw.mb.dep.builder.dependency("tools/uf2", .{
+                        //         .optimize = .ReleaseSafe,
+                        //     }),
+                        //     elf_file,
+                        //     options,
+                        // ),
 
                         .dfu => @panic("DFU is not implemented yet. See https://github.com/ZigEmbeddedGroup/microzig/issues/145 for more details!"),
 
-                        .esp => |options| @import("tools/esp-image").from_elf(
-                            fw.mb.dep.builder.dependency("tools/esp-image", .{
-                                .optimize = .ReleaseSafe,
-                            }),
-                            elf_file,
-                            options,
-                        ),
+                        .esp => @panic("commentted since non-needed"),
+                        // .esp => |options| @import("tools/esp-image").from_elf(
+                        //     fw.mb.dep.builder.dependency("tools/esp-image", .{
+                        //         .optimize = .ReleaseSafe,
+                        //     }),
+                        //     elf_file,
+                        //     options,
+                        // ),
 
                         .custom => |generator| generator.convert(fw.target.dep, elf_file),
                     };
