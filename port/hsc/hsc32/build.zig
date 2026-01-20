@@ -13,6 +13,7 @@ boards: struct {
 
 pub fn init(dep: *std.Build.Dependency) Self {
     const b = dep.builder;
+    const embassy = b.path("../hsc32-data");
 
     const hal: microzig.HardwareAbstractionLayer = .{
         .root_source_file = b.path("src/hal.zig"),
@@ -31,7 +32,8 @@ pub fn init(dep: *std.Build.Dependency) Self {
             .name = "hsc32f3",
             .url = "https://www.hsc32.com/",
             .register_definition = .{
-                .zig = b.path("src/chips/hsc32f3.zig"),
+                // .zig = b.path("src/chips/hsc32f3.zig"),
+                .embassy = embassy,
             },
             .memory_regions = &.{
                 .{ .tag = .flash, .offset = 0x00000000, .length = 128 * 1024, .access = .rx },
@@ -60,19 +62,29 @@ pub fn init(dep: *std.Build.Dependency) Self {
     };
 }
 
-pub fn build(b: *std.Build) void {
-    const optimize = b.standardOptimizeOption(.{});
-    const target = b.standardTargetOptions(.{});
+pub fn build(b: *std.Build) !void {
+    const generate_optimize = .ReleaseSafe;
+    const regz_dep = b.dependency("microzig/tools/regz", .{
+        .optimize = generate_optimize,
+    });
+    const regz = regz_dep.module("regz");
 
-    const unit_tests = b.addTest(.{
+    const generate_exe = b.addExecutable(.{
+        .name = "generate",
         .root_module = b.createModule(.{
-            .root_source_file = b.path("src/hal.zig"),
-            .target = target,
-            .optimize = optimize,
+            .root_source_file = b.path("src/generate.zig"),
+            .target = b.graph.host,
+            .optimize = generate_optimize,
         }),
     });
+    generate_exe.root_module.addImport("regz", regz);
 
-    const unit_tests_run = b.addRunArtifact(unit_tests);
-    const test_step = b.step("test", "Run platform agnostic unit tests");
-    test_step.dependOn(&unit_tests_run.step);
+    const generate_run = b.addRunArtifact(generate_exe);
+    generate_run.max_stdio_size = std.math.maxInt(usize);
+    generate_run.addFileArg(b.path("../hsc32-data"));
+
+    const generate_step = b.step("generate", "Generate chips file 'src/Chips.zig'");
+    generate_step.dependOn(&generate_run.step);
+
+    _ = b.step("test", "Run platform agnostic unit tests");
 }
