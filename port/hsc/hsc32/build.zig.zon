@@ -1,0 +1,13 @@
+.{
+    .name = .mz_port_hsc_hsc32,
+    .fingerprint = 0x700e5f683e2c9ef7,
+    .version = "0.0.0",
+    .dependencies = .{
+        .@"microzig/build-internals" = .{ .path = "../../../build-internals" },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}

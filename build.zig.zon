@@ -34,6 +34,7 @@
         .@"port/stmicro/stm32" = .{ .path = "port/stmicro/stm32", .lazy = true },
         // .@"port/texasinstruments/msp430" = .{ .path = "port/texasinstruments/msp430", .lazy = true },
         // .@"port/wch/ch32v" = .{ .path = "port/wch/ch32v", .lazy = true },
+        .@"port/hsc/hsc32" = .{ .path = "port/hsc/hsc32", .lazy = true },
 
         // used for creating package tarballs
         .boxzer = .{
