@@ -6,35 +6,26 @@ const CLOCK = microzig.chip.peripherals.CLOCK;
 const compatibility = microzig.hal.compatibility;
 
 const version: enum {
-    nrf51,
-    nrf52,
+    hsc32f3,
 } = switch (compatibility.chip) {
-    .nrf51 => .nrf51,
-    .nrf52, .nrf52833, .nrf52840 => .nrf52,
+    .hsc32f3 => .hsc32f3,
     else => compatibility.unsupported_chip("clocks"),
 };
 
 pub const hfxo = struct {
     pub fn start() void {
         switch (version) {
-            .nrf51 => {
+            .hsc32f3 => {
                 CLOCK.TASKS_HFCLKSTART = 1;
                 while (CLOCK.EVENTS_HFCLKSTARTED == 0) {}
-            },
-            .nrf52 => {
-                CLOCK.TASKS_HFCLKSTART.write_raw(1);
-                while (CLOCK.EVENTS_HFCLKSTARTED.raw == 0) {}
             },
         }
     }
 
     pub fn stop() void {
         switch (version) {
-            .nrf51 => {
+            .hsc32f3 => {
                 CLOCK.TASKS_HFCLKSTOP = 1;
-            },
-            .nrf52 => {
-                CLOCK.TASKS_HFCLKSTOP.write_raw(1);
             },
         }
     }
@@ -64,43 +55,19 @@ pub const lfclk = struct {
 
     pub fn calibrate() void {
         switch (version) {
-            .nrf51 => {
+            .hsc32f3 => {
                 CLOCK.TASKS_CAL = 1;
                 while (CLOCK.EVENTS_DONE == 0) {}
-            },
-            .nrf52 => {
-                CLOCK.TASKS_CAL.write_raw(1);
-                while (CLOCK.EVENTS_DONE.raw == 0) {}
             },
         }
     }
 
     pub fn set_source(comptime source: Source) void {
         switch (version) {
-            .nrf51 => {
+            .hsc32f3 => {
                 CLOCK.LFCLKSRC.write(.{
                     .SRC = @enumFromInt(@intFromEnum(source)),
                 });
-            },
-            .nrf52 => {
-                comptime source.validate() catch {
-                    @compileError("Invalid clock source");
-                };
-                switch (source) {
-                    .RC => CLOCK.LFCLKSRC.write(
-                        .{ .SRC = .RC, .BYPASS = .Disabled, .EXTERNAL = .Disabled },
-                    ),
-                    .Xtal => |x| {
-                        CLOCK.LFCLKSRC.write(.{
-                            .SRC = .Xtal,
-                            .BYPASS = @enumFromInt(@intFromBool(x.bypass)),
-                            .EXTERNAL = @enumFromInt(@intFromBool(x.external)),
-                        });
-                    },
-                    .Synth => CLOCK.LFCLKSRC.write(
-                        .{ .SRC = .Synth, .BYPASS = .Disabled, .EXTERNAL = .Disabled },
-                    ),
-                }
             },
         }
     }
@@ -108,21 +75,10 @@ pub const lfclk = struct {
     pub fn get_source() Source {
         const source = CLOCK.LFCLKSRC.read();
         switch (version) {
-            .nrf51 => {
+            .hsc32f3 => {
                 return switch (source.SRC) {
                     .RC => .RC,
                     .Xtal => .{ .Xtal = .{ .bypass = false, .external = false } },
-                    .Synth => .Synth,
-                    else => unreachable,
-                };
-            },
-            .nrf52 => {
-                return switch (source.SRC) {
-                    .RC => .RC,
-                    .Xtal => .{ .Xtal = .{
-                        .bypass = if (source.BYPASS == .Enabled) true else false,
-                        .external = if (source.EXTERNAL == .Enabled) true else false,
-                    } },
                     .Synth => .Synth,
                     else => unreachable,
                 };
@@ -132,24 +88,17 @@ pub const lfclk = struct {
 
     pub fn start() void {
         switch (version) {
-            .nrf51 => {
+            .hsc32f3 => {
                 CLOCK.TASKS_LFCLKSTART = 1;
                 while (CLOCK.EVENTS_LFCLKSTARTED == 0) {}
-            },
-            .nrf52 => {
-                CLOCK.TASKS_LFCLKSTART.write_raw(1);
-                while (CLOCK.EVENTS_LFCLKSTARTED.raw == 0) {}
             },
         }
     }
 
     pub fn stop() void {
         switch (version) {
-            .nrf51 => {
+            .hsc32f3 => {
                 CLOCK.TASKS_LFCLKSTOP = 1;
-            },
-            .nrf52 => {
-                CLOCK.TASKS_LFCLKSTOP.write_raw(1);
             },
         }
     }
