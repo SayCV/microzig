@@ -38,12 +38,15 @@ pub fn init(dep: *std.Build.Dependency) Self {
                 .embassy = embassy,
             },
             .memory_regions = &.{
-                .{ .tag = .flash, .offset = 0x00000000, .length = 128 * 1024, .access = .rx },
-                .{ .tag = .ram, .offset = 0x20000000, .length = 16 * 1024, .access = .rwx },
+                .{ .tag = .flash, .offset = 0x00003000, .length = 500 * 1024, .access = .rx },
+                .{ .tag = .ram, .offset = 0x20000000, .length = 120 * 1024, .access = .rwx },
             },
             // .patch_files = &.{b.path("patches/hsc32.zon")},
         },
         .hal = hal,
+        .linker_script = .{
+            .file = b.path("ld/dma_sram.ld"),
+        },
     };
 
     return .{
