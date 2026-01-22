@@ -95,7 +95,7 @@ pub const Channel = struct {
         if (event.transfer_error) {
             self.in_progress = false;
             // TODO: Find a better solution: https://github.com/ZigEmbeddedGroup/microzig/issues/806
-            @panic("DMA transfer errored, make sur device is correctly configure and memory bus can be reach by DMA");
+            @panic("DMA transfer errored, make sure device is correctly configure and memory bus can be reach by DMA");
         }
     }
 
