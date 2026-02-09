@@ -22,18 +22,18 @@ const port_list: []const struct {
     name: [:0]const u8,
     dep_name: [:0]const u8,
 } = &.{
-    // .{ .name = "esp", .dep_name = "port/espressif/esp" },
-    // .{ .name = "gd32", .dep_name = "port/gigadevice/gd32" },
-    // .{ .name = "samd51", .dep_name = "port/microchip/samd51" },
-    // .{ .name = "atmega", .dep_name = "port/microchip/atmega" },
-    // .{ .name = "nrf5x", .dep_name = "port/nordic/nrf5x" },
-    // .{ .name = "lpc", .dep_name = "port/nxp/lpc" },
-    // .{ .name = "mcx", .dep_name = "port/nxp/mcx" },
-    // .{ .name = "rp2xxx", .dep_name = "port/raspberrypi/rp2xxx" },
+    .{ .name = "esp", .dep_name = "port/espressif/esp" },
+    .{ .name = "gd32", .dep_name = "port/gigadevice/gd32" },
+    .{ .name = "samd51", .dep_name = "port/microchip/samd51" },
+    .{ .name = "atmega", .dep_name = "port/microchip/atmega" },
+    .{ .name = "nrf5x", .dep_name = "port/nordic/nrf5x" },
+    .{ .name = "lpc", .dep_name = "port/nxp/lpc" },
+    .{ .name = "mcx", .dep_name = "port/nxp/mcx" },
+    .{ .name = "rp2xxx", .dep_name = "port/raspberrypi/rp2xxx" },
     .{ .name = "stm32", .dep_name = "port/stmicro/stm32" },
-    // .{ .name = "ch32v", .dep_name = "port/wch/ch32v" },
-    // .{ .name = "msp430", .dep_name = "port/texasinstruments/msp430" },
-    .{ .name = "hsc32", .dep_name = "port/hsc/hsc32" },
+    .{ .name = "ch32v", .dep_name = "port/wch/ch32v" },
+    .{ .name = "msp430", .dep_name = "port/texasinstruments/msp430" },
+    .{ .name = "tm4c", .dep_name = "port/texasinstruments/tm4c" },
 };
 
 const exe_targets: []const std.Target.Query = &.{
@@ -77,18 +77,18 @@ pub fn build(b: *Build) void {
 }
 
 pub const PortSelect = struct {
-    // esp: bool = false,
-    // gd32: bool = false,
-    // samd51: bool = false,
-    // atmega: bool = false,
-    // nrf5x: bool = false,
-    // lpc: bool = false,
-    // mcx: bool = false,
-    // rp2xxx: bool = false,
+    esp: bool = false,
+    gd32: bool = false,
+    samd51: bool = false,
+    atmega: bool = false,
+    nrf5x: bool = false,
+    lpc: bool = false,
+    mcx: bool = false,
+    rp2xxx: bool = false,
     stm32: bool = false,
-    // ch32v: bool = false,
-    // msp430: bool = false,
-    hsc32: bool = false,
+    ch32v: bool = false,
+    msp430: bool = false,
+    tm4c: bool = false,
 
     pub const all: PortSelect = blk: {
         var ret: PortSelect = undefined;
@@ -416,7 +416,7 @@ pub fn MicroBuild(port_select: PortSelect) type {
                     regz_run.addFileArg(file);
                     break :blk chips_dir.path(b, b.fmt("{s}.zig", .{target.chip.name}));
                 },
-                .embassy => |path| blk: {
+                .embassy => |embassy| blk: {
                     const regz_run = b.addRunArtifact(regz_exe);
 
                     regz_run.addArg("--format");
@@ -430,7 +430,12 @@ pub fn MicroBuild(port_select: PortSelect) type {
                         regz_run.addFileArg(patch_file);
                     }
 
-                    regz_run.addDirectoryArg(path);
+                    if (embassy.device) |device| {
+                        regz_run.addArg("--device");
+                        regz_run.addArg(device);
+                    }
+
+                    regz_run.addDirectoryArg(embassy.path);
                     break :blk chips_dir.path(b, b.fmt("{s}.zig", .{target.chip.name}));
                 },
                 .targetdb => |targetdb| blk: {
@@ -665,25 +670,23 @@ pub fn MicroBuild(port_select: PortSelect) type {
                             break :blk objcopy.getOutput();
                         },
 
-                        .uf2 => @panic("commentted since non-needed"),
-                        // .uf2 => |options| @import("tools/uf2").from_elf(
-                        //     fw.mb.dep.builder.dependency("tools/uf2", .{
-                        //         .optimize = .ReleaseSafe,
-                        //     }),
-                        //     elf_file,
-                        //     options,
-                        // ),
+                        .uf2 => |options| @import("tools/uf2").from_elf(
+                            fw.mb.dep.builder.dependency("tools/uf2", .{
+                                .optimize = .ReleaseSafe,
+                            }),
+                            elf_file,
+                            options,
+                        ),
 
                         .dfu => @panic("DFU is not implemented yet. See https://github.com/ZigEmbeddedGroup/microzig/issues/145 for more details!"),
 
-                        .esp => @panic("commentted since non-needed"),
-                        // .esp => |options| @import("tools/esp-image").from_elf(
-                        //     fw.mb.dep.builder.dependency("tools/esp-image", .{
-                        //         .optimize = .ReleaseSafe,
-                        //     }),
-                        //     elf_file,
-                        //     options,
-                        // ),
+                        .esp => |options| @import("tools/esp-image").from_elf(
+                            fw.mb.dep.builder.dependency("tools/esp-image", .{
+                                .optimize = .ReleaseSafe,
+                            }),
+                            elf_file,
+                            options,
+                        ),
 
                         .custom => |generator| generator.convert(fw.target.dep, elf_file),
                     };
