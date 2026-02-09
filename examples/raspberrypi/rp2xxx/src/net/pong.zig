@@ -14,10 +14,10 @@ pub const microzig_options = microzig.Options{
 };
 const log = std.log.scoped(.main);
 
-const net = @import("lwip/net.zig");
 comptime {
-    _ = @import("lwip/exports.zig");
+    _ = @import("lwip_exports.zig");
 }
+const net = @import("net");
 const secrets = @import("secrets.zig");
 
 pub fn main() !void {
@@ -35,18 +35,11 @@ pub fn main() !void {
     log.debug("mac address: {x}", .{wifi.mac});
 
     // join network
-    try wifi.join(secrets.ssid, secrets.pwd, secrets.join_opt);
+    try wifi.join_wait(secrets.ssid, secrets.pwd, secrets.join_opt);
     log.debug("wifi joined", .{});
 
     // init lwip network interface
-    var nic: net.Interface = .{
-        .link = .{
-            .ptr = wifi,
-            .recv = drivers.WiFi.recv,
-            .send = drivers.WiFi.send,
-            .ready = drivers.WiFi.ready,
-        },
-    };
+    var nic: net.Interface = .{ .link = wifi.link() };
     try nic.init(wifi.mac, try secrets.nic_options());
 
     var ts = time.get_time_since_boot();
